@@ -9,15 +9,9 @@ export default function ListOfCountries({
   isLoading,
   setIsLoading,
   setError,
+  countriesData,
+  setCountriesData,
 }) {
-  const [countriesData, setCountriesData] = useState({
-    flags: [],
-    countries: [],
-    populations: [],
-    regions: [],
-    capitals: [],
-  });
-
   useEffect(
     function () {
       const fetchCountriesData = async function () {
@@ -55,21 +49,20 @@ export default function ListOfCountries({
             capitals,
           });
         } catch (err) {
-          console.log(err.message);
           setError(err.message);
         } finally {
           setIsLoading(false);
         }
       })();
     },
-    [setError, setIsLoading]
+    [setError, setIsLoading, setCountriesData]
   );
 
   return (
     <ul className="list-of-countries">
       {!isLoading &&
         !error &&
-        countriesData.countries.map((__, i) => (
+        countriesData.countries?.map((__, i) => (
           <Country countriesData={countriesData} i={i} key={i} />
         ))}
       {isLoading && <Loader />}
