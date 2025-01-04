@@ -1,10 +1,10 @@
-import FindCountry from "./FindCountry";
-import ListOfCountries from "./ListOfCountries";
 import { useState } from "react";
-import FindCountryByFilter from "./FindCountryByFilter";
+import FindCountry from "./FindCountry";
 import FindCountryBySearch from "./FindCountryBySearch";
+import FindCountryByFilter from "./FindCountryByFilter";
+import ListOfCountries from "./ListOfCountries";
 
-export default function HomePage() {
+export default function HomePage({ triggerFetch }) {
   /* home page */
   const [countriesData, setCountriesData] = useState({
     flags: [],
@@ -24,9 +24,16 @@ export default function HomePage() {
           setErr={setError}
           setCountriesData={setCountriesData}
         />
-        <FindCountryByFilter error={error} isLoading={isLoading} />
+        <FindCountryByFilter
+          error={error}
+          isLoading={isLoading}
+          setLoading={setIsLoading}
+          setCountriesData={setCountriesData}
+          setErr={setError}
+        />
       </FindCountry>
       <ListOfCountries
+        triggerFetch={triggerFetch}
         countriesData={countriesData}
         setCountriesData={setCountriesData}
         isLoading={isLoading}

@@ -1,6 +1,7 @@
-export default function Logo() {
+export default function Logo({ onTriggerFetch }) {
   return (
     <p
+      onClick={onTriggerFetch}
       className="title"
       role="button"
       tabIndex="0"

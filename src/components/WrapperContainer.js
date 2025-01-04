@@ -1,11 +1,3 @@
-import Footer from "./Footer";
-import Main from "./Main";
-
-export default function WrapperContainer() {
-  return (
-    <div className="wrapper">
-      <Main />
-      <Footer />
-    </div>
-  );
+export default function WrapperContainer({ children }) {
+  return <div className="wrapper">{children}</div>;
 }

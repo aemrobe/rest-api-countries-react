@@ -1,13 +1,7 @@
-import { DarkModeThemeSwitcher } from "./DarkModeThemeSwitcher";
-import Logo from "./Logo";
-
-export default function Header({ pageMode, setPageMode }) {
+export default function Header({ children }) {
   return (
     <div className="header-container">
-      <header>
-        <Logo />
-        <DarkModeThemeSwitcher pageMode={pageMode} setPageMode={setPageMode} />
-      </header>
+      <header>{children}</header>
     </div>
   );
 }

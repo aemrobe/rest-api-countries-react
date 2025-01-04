@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { getJson } from "../Utils/helpers";
+import { getJson, mapArray } from "../Utils/helpers";
 import { API_URL, COUNTRY_DATA_ERR } from "../config/config";
 import Loader from "./Loader";
 import Error from "./Error";
@@ -11,6 +11,7 @@ export default function FindCountryBySearch({
 }) {
   /* search element */
   const searchResultEl = useRef(null);
+  const searchInputBox = useRef(null);
   const [isLoading, setIsLoading] = useState(null);
   const [error, setError] = useState(null);
   const [searchResult, setSearchResult] = useState({
@@ -21,11 +22,6 @@ export default function FindCountryBySearch({
     capitals: [],
   });
   const [selectedCountry, setSelectedCountry] = useState("");
-
-  //handler
-  const handleSelectedCountry = function (country) {
-    setSelectedCountry(country);
-  };
 
   const closeSearchResults = () => {
     if (!searchResultEl.current.classList.contains("show-result-list")) return;
@@ -39,11 +35,19 @@ export default function FindCountryBySearch({
     }, 500);
   };
 
+  //handler
+  const handleSelectedCountry = function (country) {
+    setSelectedCountry(country);
+    SetQuery("");
+    closeSearchResults();
+  };
+
   //handle when user submits a search query
   const handlerFormSubmit = function (e) {
     e.preventDefault();
 
     setCountriesData(searchResult);
+    SetQuery("");
   };
 
   const handleEmptyInputBox = function (e) {
@@ -86,23 +90,10 @@ export default function FindCountryBySearch({
           setErr(null);
           const data = await getCountrySearchResult();
 
-          const flags = data.map((country) =>
-            country.flags ? country.flags : "No Flag data"
+          const { flags, countries, populations, regions, capitals } = mapArray(
+            data,
+            true
           );
-          const countries = data.map((country) =>
-            country.name?.common ? country.name?.common : "No Country Name Data"
-          );
-          const populations = data.map((country) =>
-            country.population ? country.population : "No Population data"
-          );
-          const regions = data.map((data) =>
-            data.continents[0] ? data.continents[0] : "No Continent data"
-          );
-          const capitals = data.map((country) =>
-            country.capital[0] ? country.capital[0] : "No Capital City data"
-          );
-
-          console.log(capitals, flags, countries, populations, regions);
 
           setCountriesData({
             flags,
@@ -188,20 +179,9 @@ export default function FindCountryBySearch({
           searchResultEl.current.classList.add("show-result-list");
           const data = await getCountrySearchResult();
 
-          let capitals = data.map((data) =>
-            data.capital[0] ? data.capital[0] : "No Capital city data"
-          );
-          let flags = data.map((data) =>
-            data.flags ? data.flags : "No Flag data"
-          );
-          let countries = data.map((data) =>
-            data.name?.common ? data.name?.common : "No Country Name Data"
-          );
-          let populations = data.map((data) =>
-            data.population ? data.population : "No Population data"
-          );
-          let regions = data.map((data) =>
-            data.continents[0] ? data.continents[0] : "No Continent data"
+          const { flags, countries, populations, regions, capitals } = mapArray(
+            data,
+            true
           );
 
           setSearchResult({
@@ -245,6 +225,7 @@ export default function FindCountryBySearch({
 
       {/* search input */}
       <input
+        ref={searchInputBox}
         type="text"
         value={query}
         onChange={(e) => SetQuery(e.target.value)}

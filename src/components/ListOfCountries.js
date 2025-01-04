@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
-import { getJson } from "../Utils/helpers";
+import { useEffect } from "react";
+import { getJson, mapArray } from "../Utils/helpers";
 import { API_URL } from "../config/config";
+
 import Loader from "./Loader";
 import Error from "./Error";
 
@@ -11,6 +12,7 @@ export default function ListOfCountries({
   setError,
   countriesData,
   setCountriesData,
+  triggerFetch,
 }) {
   useEffect(
     function () {
@@ -24,7 +26,6 @@ export default function ListOfCountries({
 
           return data;
         } catch (err) {
-          console.log(err.message);
           throw err;
         }
       };
@@ -35,11 +36,10 @@ export default function ListOfCountries({
           setError(null);
           const data = await fetchCountriesData();
 
-          const flags = data.map((country) => country.flags);
-          const countries = data.map((country) => country.name?.common);
-          const populations = data.map((country) => country.population);
-          const regions = data.map((country) => country.continents[0]);
-          const capitals = data.map((country) => country.capital[0]);
+          const { flags, countries, populations, regions, capitals } = mapArray(
+            data,
+            ""
+          );
 
           setCountriesData({
             flags,
@@ -55,7 +55,7 @@ export default function ListOfCountries({
         }
       })();
     },
-    [setError, setIsLoading, setCountriesData]
+    [setError, setIsLoading, setCountriesData, triggerFetch]
   );
 
   return (

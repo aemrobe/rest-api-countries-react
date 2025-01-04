@@ -25,3 +25,40 @@ export const getJson = async function (API_URL, errMessage, options = {}) {
     throw err;
   }
 };
+
+export const mapArray = function (arr, search) {
+  console.log(arr);
+  const flags = arr.map((country) =>
+    country.flags ? country.flags : search ? "No Flag data" : ""
+  );
+
+  const countries = arr.map((country) =>
+    country.name?.common
+      ? country.name?.common
+      : search
+      ? "No Country Name Data"
+      : ""
+  );
+
+  const populations = arr.map((country) =>
+    country.population ? country.population : search ? "No Population data" : ""
+  );
+
+  const regions = arr.map((country) =>
+    country.continents[0]
+      ? country.continents[0]
+      : search
+      ? "No Continent data"
+      : ""
+  );
+
+  const capitals = arr.map((country) =>
+    country.capital[0]
+      ? country.capital[0]
+      : search
+      ? "No Capital City data"
+      : ""
+  );
+
+  return { flags, countries, populations, regions, capitals };
+};
