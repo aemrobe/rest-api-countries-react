@@ -13,6 +13,7 @@ export default function ListOfCountries({
   countriesData,
   setCountriesData,
   triggerFetch,
+  onHandleSelectedCountries,
 }) {
   useEffect(
     function () {
@@ -59,7 +60,15 @@ export default function ListOfCountries({
   );
 
   return (
-    <ul className="list-of-countries">
+    <ul
+      className="list-of-countries"
+      onClick={onHandleSelectedCountries}
+      onKeyUp={function (e) {
+        if (e.key === "Enter") {
+          onHandleSelectedCountries(e);
+        }
+      }}
+    >
       {!isLoading &&
         !error &&
         countriesData.countries?.map((__, i) => (

@@ -4,7 +4,11 @@ import FindCountryBySearch from "./FindCountryBySearch";
 import FindCountryByFilter from "./FindCountryByFilter";
 import ListOfCountries from "./ListOfCountries";
 
-export default function HomePage({ triggerFetch }) {
+export default function HomePage({
+  triggerFetch,
+  selectedCountryDetail,
+  onHandleSelectedCountries,
+}) {
   /* home page */
   const [countriesData, setCountriesData] = useState({
     flags: [],
@@ -17,7 +21,7 @@ export default function HomePage({ triggerFetch }) {
   const [isLoading, setIsLoading] = useState(null);
   const [error, setError] = useState(null);
   return (
-    <div className="home-page">
+    <div className={`home-page ${selectedCountryDetail ? "hidden" : ""}`}>
       <FindCountry>
         <FindCountryBySearch
           setLoading={setIsLoading}
@@ -33,6 +37,7 @@ export default function HomePage({ triggerFetch }) {
         />
       </FindCountry>
       <ListOfCountries
+        onHandleSelectedCountries={onHandleSelectedCountries}
         triggerFetch={triggerFetch}
         countriesData={countriesData}
         setCountriesData={setCountriesData}

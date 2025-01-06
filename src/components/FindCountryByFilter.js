@@ -25,6 +25,28 @@ export default function FindCountryByFilter({
     regionList.current.classList.remove("hidden");
   };
 
+  const handleClickOnEnterKeyOnRegions = function (e) {
+    const filterRegion = e.target.closest(".find-country__filter-region-item");
+
+    const label = e.target.closest(".find-country__filter-mode");
+
+    if (label) {
+      if (e.key !== "Enter") return;
+
+      const filterRegionList = document.querySelector(
+        ".find-country__filter-region-list"
+      );
+
+      filterRegionList.focus();
+    } else if (filterRegion) {
+      if (e.key !== "Enter") return;
+
+      const filterRegionItem = filterRegion.textContent.trim().toLowerCase();
+
+      setFilterByRegion(filterRegionItem);
+    }
+  };
+
   useEffect(
     function () {
       const fetchCountriesByRegion = async function () {
@@ -75,6 +97,7 @@ export default function FindCountryByFilter({
     <div
       className="find-country__filter-countries expand-drop-down"
       onClick={handleClick}
+      onKeyUp={handleClickOnEnterKeyOnRegions}
     >
       <div className="find-country__filter-countries__wrapper">
         <label

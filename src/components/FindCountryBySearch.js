@@ -11,7 +11,10 @@ export default function FindCountryBySearch({
 }) {
   /* search element */
   const searchResultEl = useRef(null);
+  const searchResultContainer = useRef(null);
   const searchInputBox = useRef(null);
+
+  /* states */
   const [isLoading, setIsLoading] = useState(null);
   const [error, setError] = useState(null);
   const [searchResult, setSearchResult] = useState({
@@ -50,6 +53,7 @@ export default function FindCountryBySearch({
     SetQuery("");
   };
 
+  //handle when the input box is empty
   const handleEmptyInputBox = function (e) {
     const inputBox = e.target.value;
 
@@ -59,6 +63,37 @@ export default function FindCountryBySearch({
   };
 
   const [query, SetQuery] = useState("");
+
+  //handle when the user clicks on search result and when focus is outside of the search result
+  useEffect(function () {
+    const focusinHandler = function (event) {
+      if (!searchResultContainer.current.contains(event.target)) {
+        closeSearchResults();
+      }
+    };
+
+    const searchCountriesByKeyboard = function (e) {
+      const elementOnFocus = e.target.closest(".find-country__search-result");
+
+      if (e.code === "Enter" && elementOnFocus) {
+        setSelectedCountry(elementOnFocus.textContent.trim());
+        SetQuery("");
+        closeSearchResults();
+      } else if (e.code === "Tab") {
+        const lastSearchResult = searchResultContainer.current.lastElementChild;
+
+        if (document.activeElement === lastSearchResult) {
+          document.addEventListener("focusin", focusinHandler, { once: true });
+        }
+      }
+    };
+
+    document.addEventListener("keyup", searchCountriesByKeyboard);
+
+    return () => {
+      document.removeEventListener("keyup", searchCountriesByKeyboard);
+    };
+  }, []);
 
   //handle the search result when the user clicks on the search result
   useEffect(
@@ -245,7 +280,10 @@ export default function FindCountryBySearch({
         ref={searchResultEl}
         aria-label="list of search results"
       >
-        <ul className="find-country__search-results-container">
+        <ul
+          className="find-country__search-results-container"
+          ref={searchResultContainer}
+        >
           {!error &&
             !isLoading &&
             searchResult.countries?.map((_, i) => (
