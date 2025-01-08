@@ -21,13 +21,11 @@ export const getJson = async function (API_URL, errMessage, options = {}) {
 
     return data;
   } catch (err) {
-    console.log(err.message);
     throw err;
   }
 };
 
 export const mapArray = function (arr, search) {
-  console.log(arr);
   const flags = arr.map((country) =>
     country.flags ? country.flags : search ? "No Flag data" : ""
   );

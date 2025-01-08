@@ -22,6 +22,7 @@ function App() {
   const handleTriggerFetch = function () {
     setTriggerFetch((prevValue) => !prevValue);
     setSelectedCountryDetail("");
+    setError("");
   };
 
   const backToTheHomePage = function () {

@@ -1,7 +1,6 @@
 import { IMGURL } from "../config/config";
 
 export default function Error({ error }) {
-  console.log(error);
   return (
     <div className="error">
       <div>
