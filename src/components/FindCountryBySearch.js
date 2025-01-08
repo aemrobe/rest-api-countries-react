@@ -278,7 +278,6 @@ export default function FindCountryBySearch({
       `}
         tabIndex="0"
         ref={searchResultEl}
-        aria-label="list of search results"
       >
         <ul
           className="find-country__search-results-container"
@@ -305,7 +304,6 @@ export default function FindCountryBySearch({
 function SearchResult({ result, i, onSelectedCountry }) {
   return (
     <li
-      role="button"
       tabIndex="0"
       onClick={() => onSelectedCountry(result.countries[i])}
       className={`find-country__search-result result-${i + 1}`}

@@ -109,7 +109,7 @@ export default function FindCountryByFilter({
         </label>
 
         <div className="find-country__filter-icons">
-          <FontAwesomeIcon icon={faChevronDown} />
+          <FontAwesomeIcon icon={faChevronDown} aria-hidden="true" />
 
           <p className="sr-only">arrow expanded</p>
         </div>

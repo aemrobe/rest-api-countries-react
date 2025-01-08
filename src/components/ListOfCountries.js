@@ -82,7 +82,7 @@ export default function ListOfCountries({
 
 function Country({ countriesData, i }) {
   return (
-    <li className="country" tabIndex="0" aria-label="country" role="button">
+    <li className="country" tabIndex="0">
       <div className="image-container">
         <img
           src={`${countriesData.flags[i].png}`}

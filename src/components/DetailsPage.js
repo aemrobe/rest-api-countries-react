@@ -25,7 +25,7 @@ export default function DetailsPage({
             className="back-btn"
             aria-label="Back To Previous page"
           >
-            <FontAwesomeIcon icon={faArrowLeft} />
+            <FontAwesomeIcon icon={faArrowLeft} aria-hidden="true" />
             Back
           </button>
           <div className="page-detail__info">
@@ -143,12 +143,7 @@ export default function DetailsPage({
 
 function DisplayBorderCountries({ borderCountry }) {
   return (
-    <li
-      className="page-detail__text-item-border"
-      tabIndex="0"
-      aria-label="border country"
-      role="button"
-    >
+    <li className="page-detail__text-item-border" tabIndex="0">
       {borderCountry}
     </li>
   );
