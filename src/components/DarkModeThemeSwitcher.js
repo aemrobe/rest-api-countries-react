@@ -17,7 +17,6 @@ export function DarkModeThemeSwitcher({ pageMode, setPageMode }) {
           handlePageMode();
         }
       }}
-      aria-pressed={pageMode === "light" ? false : true}
       tabIndex="0"
     >
       <div className="theme-switcher__icon">
