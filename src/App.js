@@ -22,11 +22,13 @@ function App() {
   const handleTriggerFetch = function () {
     setTriggerFetch((prevValue) => !prevValue);
     setSelectedCountryDetail("");
+    setDisplayedCountryDetail("");
     setError("");
   };
 
   const backToTheHomePage = function () {
     setSelectedCountryDetail("");
+    setDisplayedCountryDetail("");
   };
 
   const handleCountryDetail = function (e) {
@@ -170,6 +172,7 @@ function App() {
           });
         } catch (err) {
           setError(err.message);
+          setDisplayedCountryDetail("No Border Country");
         } finally {
           setIsLoading(false);
         }
@@ -196,14 +199,16 @@ function App() {
             triggerFetch={triggerFetch}
           />
 
-          <DetailsPage
-            isLoading={isLoading}
-            error={error}
-            selectedCountryDetail={selectedCountryDetail}
-            onHandleBackToTheHomePage={backToTheHomePage}
-            onHandleBorderCountryDetails={handleBorderCountryDetail}
-            displayedCountryDetail={displayedCountryDetail}
-          />
+          {displayedCountryDetail && (
+            <DetailsPage
+              isLoading={isLoading}
+              error={error}
+              selectedCountryDetail={selectedCountryDetail}
+              onHandleBackToTheHomePage={backToTheHomePage}
+              onHandleBorderCountryDetails={handleBorderCountryDetail}
+              displayedCountryDetail={displayedCountryDetail}
+            />
+          )}
         </Main>
         <Footer />
       </WrapperContainer>
