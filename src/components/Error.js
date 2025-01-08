@@ -4,7 +4,7 @@ export default function Error({ error }) {
   return (
     <div className="error">
       <div>
-        <svg>
+        <svg aria-hidden="true">
           <use href={`${IMGURL}/icons/icons.svg#icon-alert-triangle`}></use>
         </svg>
       </div>

@@ -109,7 +109,7 @@ export default function FindCountryByFilter({
         </label>
 
         <div className="find-country__filter-icons">
-          <FontAwesomeIcon icon={faChevronDown} />
+          <FontAwesomeIcon icon={faChevronDown} aria-hidden="true" />
 
           <p className="sr-only">arrow expanded</p>
         </div>
@@ -128,8 +128,6 @@ export default function FindCountryByFilter({
           <li
             onClick={() => handleFilterbyRegion("africa")}
             tabIndex="0"
-            role="button"
-            aria-label="Filter by Africa"
             className="find-country__filter-region-item find-country__filter-region-item--1"
           >
             Africa
@@ -137,8 +135,6 @@ export default function FindCountryByFilter({
           <li
             tabIndex="0"
             onClick={() => handleFilterbyRegion("america")}
-            role="button"
-            aria-label="Filter by America"
             className="find-country__filter-region-item find-country__filter-region-item--2"
           >
             America
@@ -146,8 +142,6 @@ export default function FindCountryByFilter({
           <li
             tabIndex="0"
             onClick={() => handleFilterbyRegion("asia")}
-            role="button"
-            aria-label="Filter by Asia"
             className="find-country__filter-region-item find-country__filter-region-item--3"
           >
             Asia
@@ -156,8 +150,6 @@ export default function FindCountryByFilter({
           <li
             tabIndex="0"
             onClick={() => handleFilterbyRegion("europe")}
-            role="button"
-            aria-label="Filter by Europe"
             className="find-country__filter-region-item find-country__filter-region-item--4"
           >
             Europe
@@ -166,8 +158,6 @@ export default function FindCountryByFilter({
           <li
             tabIndex="0"
             onClick={() => handleFilterbyRegion("oceania")}
-            role="button"
-            aria-label="Filter by Oceania"
             className="find-country__filter-region-item find-country__filter-region-item--5"
           >
             Oceania
