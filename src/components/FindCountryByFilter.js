@@ -80,8 +80,6 @@ export default function FindCountryByFilter({
   );
 
   /* filter by region */
-  //this handles the data that is returned by the useFetch
-  //this handles the fetch logic when someone clicks on the countries to see their details
   return (
     <div
       className="find-country__filter-countries expand-drop-down"

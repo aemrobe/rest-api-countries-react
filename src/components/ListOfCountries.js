@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { getJson, mapArray } from "../Utils/helpers";
+import { mapArray } from "../Utils/helpers";
 import { API_URL } from "../config/config";
 
 import Loader from "./Loader";
