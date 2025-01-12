@@ -4,6 +4,7 @@ import { API_URL } from "../config/config";
 
 import Loader from "./Loader";
 import Error from "./Error";
+import useFetch from "../Hooks/useFetch";
 
 export default function ListOfCountries({
   error,
@@ -15,48 +16,33 @@ export default function ListOfCountries({
   triggerFetch,
   onHandleSelectedCountries,
 }) {
+  const { data, loading, err } = useFetch(
+    `${API_URL}/all?fields=flags,name,capital,population,continents
+  `,
+    "wrong countries url",
+    triggerFetch
+  );
+
   useEffect(
     function () {
-      const fetchCountriesData = async function () {
-        try {
-          const data = await getJson(
-            `${API_URL}/all?fields=flags,name,capital,population,continents
-`,
-            "wrong countries url"
-          );
+      setIsLoading(loading);
+      setError(err);
 
-          return data;
-        } catch (err) {
-          throw err;
-        }
-      };
-
-      (async function () {
-        try {
-          setIsLoading(true);
-          setError(null);
-          const data = await fetchCountriesData();
-
-          const { flags, countries, populations, regions, capitals } = mapArray(
-            data,
-            ""
-          );
-
-          setCountriesData({
-            flags,
-            countries,
-            populations,
-            regions,
-            capitals,
-          });
-        } catch (err) {
-          setError(err.message);
-        } finally {
-          setIsLoading(false);
-        }
-      })();
+      if (data) {
+        const { flags, countries, populations, regions, capitals } = mapArray(
+          data,
+          ""
+        );
+        setCountriesData({
+          flags,
+          countries,
+          populations,
+          regions,
+          capitals,
+        });
+      }
     },
-    [setError, setIsLoading, setCountriesData, triggerFetch]
+    [data, loading, err, setError, setIsLoading, setCountriesData]
   );
 
   return (

@@ -12,8 +12,6 @@ export default function DetailsPage({
   isLoading,
   error,
 }) {
-  console.log(displayedCountryDetail);
-  console.log(selectedCountryDetail);
   useEffect(
     function () {
       document.title = `${

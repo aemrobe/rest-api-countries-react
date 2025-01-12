@@ -1,8 +1,9 @@
 import { useEffect, useState, useRef } from "react";
-import { getJson, mapArray } from "../Utils/helpers";
+import { mapArray } from "../Utils/helpers";
 import { API_URL } from "../config/config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
+import useFetch from "../Hooks/useFetch";
 
 export default function FindCountryByFilter({
   isLoading,
@@ -47,52 +48,40 @@ export default function FindCountryByFilter({
     }
   };
 
+  //handle data using useFetch when the user clicks on the filter regions
+  const { data, loading, err } = useFetch(
+    `${API_URL}/region/${filterByRegion}?fields=flags,name,capital,population,continents`,
+    "wrong region data",
+    filterByRegion
+  );
+
+  //handle the datas which are returned from the useFetch
   useEffect(
     function () {
-      const fetchCountriesByRegion = async function () {
-        try {
-          const result = await getJson(
-            `${API_URL}/region/${filterByRegion}?fields=flags,name,capital,population,continents`,
-            "wrong region data"
-          );
+      setLoading(loading);
+      setErr(err);
 
-          return result;
-        } catch (err) {
-          throw err;
-        }
-      };
+      if (data) {
+        const { flags, countries, populations, regions, capitals } = mapArray(
+          data,
+          true
+        );
 
-      if (!filterByRegion) return;
-
-      (async function () {
-        try {
-          setLoading(true);
-          setErr(null);
-          const data = await fetchCountriesByRegion();
-
-          const { flags, countries, populations, regions, capitals } = mapArray(
-            data,
-            true
-          );
-
-          setCountriesData({
-            flags,
-            countries,
-            populations,
-            regions,
-            capitals,
-          });
-        } catch (err) {
-          setErr(err.message);
-        } finally {
-          setLoading(false);
-        }
-      })();
+        setCountriesData({
+          flags,
+          countries,
+          populations,
+          regions,
+          capitals,
+        });
+      }
     },
-    [filterByRegion, setCountriesData, setErr, setLoading]
+    [data, err, loading, setCountriesData, setErr, setLoading]
   );
 
   /* filter by region */
+  //this handles the data that is returned by the useFetch
+  //this handles the fetch logic when someone clicks on the countries to see their details
   return (
     <div
       className="find-country__filter-countries expand-drop-down"

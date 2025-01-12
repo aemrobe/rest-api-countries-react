@@ -9,7 +9,8 @@ import DetailsPage from "./components/DetailsPage";
 import Footer from "./components/Footer";
 
 import { API_URL, COUNTRY_DATA_ERR } from "./config/config";
-import { getJson } from "./Utils/helpers";
+
+import useFetch from "./Hooks/useFetch";
 
 function App() {
   const [pageMode, setPageMode] = useState("light");
@@ -61,43 +62,43 @@ function App() {
     setSelectedCountryDetail(borderCountryName);
   };
 
+  //this handles the fetch logic when someone clicks on the countries to see their details
+  const { data, loading, err } = useFetch(
+    `${API_URL}/name/${selectedCountryDetail}?fullText=true`,
+    `${COUNTRY_DATA_ERR}`,
+    selectedCountryDetail
+  );
+
+  //this handles the data that is returned by the useFetch
   useEffect(
     function () {
-      const fetchCountryDetail = async function () {
-        try {
-          const [result] = await getJson(
-            `${API_URL}/name/${selectedCountryDetail}?fullText=true`,
-            `${COUNTRY_DATA_ERR}`
-          );
+      setIsLoading(loading);
+      setError(err);
 
-          return result;
-        } catch (err) {
-          throw err;
-        }
-      };
+      if (data) {
+        const [dataResult] = data;
 
-      if (!selectedCountryDetail) return;
-
-      (async function () {
-        try {
-          setIsLoading(true);
-          setError("");
-          const data = await fetchCountryDetail();
-
-          const flag = data.flags;
-          const countryName = data.name?.common;
+        (async function () {
+          const flag = dataResult.flags;
+          const countryName = dataResult.name?.common;
           let nativeName;
-          const population = data.population;
-          const region = data.region;
-          const subRegion = data.subRegion ? data.subRegion : "No subregion";
-          const capital = data.capital[0] ? data.capital[0] : "No capital city";
-          const topLevelDomain = data.tld[0] ? data.tld[0] : "No TLD";
+          const population = dataResult.population;
+          const region = dataResult.region;
+          const subRegion = dataResult.subRegion
+            ? dataResult.subRegion
+            : "No subregion";
+          const capital = dataResult.capital[0]
+            ? dataResult.capital[0]
+            : "No capital city";
+          const topLevelDomain = dataResult.tld[0]
+            ? dataResult.tld[0]
+            : "No TLD";
           let languagesData;
           let currencies;
 
           //assigning the value of the currency of the country
-          if (data.currencies) {
-            const { ...currency } = data.currencies;
+          if (dataResult.currencies) {
+            const { ...currency } = dataResult.currencies;
             for (const key in currency) {
               currencies = currency[key].name;
 
@@ -108,8 +109,8 @@ function App() {
           }
 
           //assigning the value of the language of the country
-          if (data.languages) {
-            const { ...language } = data.languages;
+          if (dataResult.languages) {
+            const { ...language } = dataResult.languages;
 
             let languages = [];
 
@@ -123,7 +124,7 @@ function App() {
           }
 
           //assigning the value of the border of the country
-          let borderCountries = data.borders;
+          let borderCountries = dataResult.borders;
 
           const fetchBorderCountry = async function (borderCode) {
             const res = await fetch(`${API_URL}/alpha/${borderCode}`);
@@ -144,8 +145,8 @@ function App() {
           }
 
           //assigning the value of the nativeName of the country
-          if (data.name?.nativeName) {
-            const { ...Name } = data.name.nativeName;
+          if (dataResult.name?.nativeName) {
+            const { ...Name } = dataResult.name.nativeName;
             for (const key in Name) {
               if (Name.hasOwnProperty(key)) {
                 nativeName = Name[key].common;
@@ -170,16 +171,133 @@ function App() {
             nativeName,
             currencies,
           });
-        } catch (err) {
-          setError(err.message);
-          setDisplayedCountryDetail("No Border Country");
-        } finally {
-          setIsLoading(false);
-        }
-      })();
+        })();
+      } else if (err) {
+        setDisplayedCountryDetail("No Border Country");
+      }
     },
-    [selectedCountryDetail]
+    [data, err, loading]
   );
+
+  // useEffect(
+  //   function () {
+  //     const fetchCountryDetail = async function () {
+  //       try {
+  //         const [result] = await getJson(
+  //           `${API_URL}/name/${selectedCountryDetail}?fullText=true`,
+  //           `${COUNTRY_DATA_ERR}`
+  //         );
+
+  //         return result;
+  //       } catch (err) {
+  //         throw err;
+  //       }
+  //     };
+
+  //     if (!selectedCountryDetail) return;
+
+  //     (async function () {
+  //       try {
+  //         setIsLoading(true);
+  //         setError("");
+  //         const data = await fetchCountryDetail();
+
+  //         const flag = data.flags;
+  //         const countryName = data.name?.common;
+  //         let nativeName;
+  //         const population = data.population;
+  //         const region = data.region;
+  //         const subRegion = data.subRegion ? data.subRegion : "No subregion";
+  //         const capital = data.capital[0] ? data.capital[0] : "No capital city";
+  //         const topLevelDomain = data.tld[0] ? data.tld[0] : "No TLD";
+  //         let languagesData;
+  //         let currencies;
+
+  //         //assigning the value of the currency of the country
+  //         if (data.currencies) {
+  //           const { ...currency } = data.currencies;
+  //           for (const key in currency) {
+  //             currencies = currency[key].name;
+
+  //             break;
+  //           }
+  //         } else {
+  //           currencies = "No Currency data";
+  //         }
+
+  //         //assigning the value of the language of the country
+  //         if (data.languages) {
+  //           const { ...language } = data.languages;
+
+  //           let languages = [];
+
+  //           for (const key in language) {
+  //             languages.push(language[key]);
+  //           }
+
+  //           languagesData = languages.join(", ");
+  //         } else {
+  //           languagesData = "No Language data";
+  //         }
+
+  //         //assigning the value of the border of the country
+  //         let borderCountries = data.borders;
+
+  //         const fetchBorderCountry = async function (borderCode) {
+  //           const res = await fetch(`${API_URL}/alpha/${borderCode}`);
+
+  //           const [data] = await res.json();
+
+  //           return data.name.common;
+  //         };
+
+  //         if (borderCountries && borderCountries.length > 0) {
+  //           borderCountries = await Promise.all(
+  //             borderCountries?.map(async (bordercode) => {
+  //               return await fetchBorderCountry(bordercode);
+  //             })
+  //           );
+  //         } else {
+  //           borderCountries = ["No Border Country"];
+  //         }
+
+  //         //assigning the value of the nativeName of the country
+  //         if (data.name?.nativeName) {
+  //           const { ...Name } = data.name.nativeName;
+  //           for (const key in Name) {
+  //             if (Name.hasOwnProperty(key)) {
+  //               nativeName = Name[key].common;
+
+  //               break;
+  //             }
+  //           }
+  //         } else {
+  //           nativeName = "No Native Name";
+  //         }
+
+  //         setDisplayedCountryDetail({
+  //           flag,
+  //           countryName,
+  //           population,
+  //           region,
+  //           subRegion,
+  //           capital,
+  //           topLevelDomain,
+  //           languagesData,
+  //           borderCountries,
+  //           nativeName,
+  //           currencies,
+  //         });
+  //       } catch (err) {
+  //         setError(err.message);
+  //         setDisplayedCountryDetail("No Border Country");
+  //       } finally {
+  //         setIsLoading(false);
+  //       }
+  //     })();
+  //   },
+  //   [selectedCountryDetail]
+  // );
 
   return (
     <div className={`${pageMode === "light" ? "" : "dark"} App`}>

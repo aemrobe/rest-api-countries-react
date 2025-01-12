@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from "react";
-import { getJson, mapArray } from "../Utils/helpers";
+import { mapArray } from "../Utils/helpers";
 import { API_URL, COUNTRY_DATA_ERR } from "../config/config";
 import Loader from "./Loader";
 import Error from "./Error";
+import useFetch from "../Hooks/useFetch";
 
 export default function FindCountryBySearch({
   setCountriesData,
@@ -96,64 +97,46 @@ export default function FindCountryBySearch({
   }, []);
 
   //handle the search result when the user clicks on the search result
+  const {
+    data: dataSearch,
+    loading: loadingSearch,
+    err: errSearch,
+  } = useFetch(
+    `${API_URL}/name/${selectedCountry}?fields=flags,name,capital,population,continents`,
+    `${COUNTRY_DATA_ERR}`,
+    selectedCountry
+  );
+
+  //handle the useFetch hook when someone clicks on the search result
   useEffect(
     function () {
-      const controller = new AbortController();
+      setLoading(loadingSearch);
+      setErr(errSearch);
 
-      const signal = controller.signal;
+      if (dataSearch) {
+        const { flags, countries, populations, regions, capitals } = mapArray(
+          dataSearch,
+          true
+        );
 
-      const getCountrySearchResult = async function () {
-        try {
-          const result = await getJson(
-            `${API_URL}/name/${selectedCountry}?fields=flags,name,capital,population,continents`,
-            `${COUNTRY_DATA_ERR}`,
-            { signal }
-          );
-
-          return result;
-        } catch (err) {
-          throw err;
-        }
-      };
-
-      //if there is no selected country, the fetch function won't be executed
-      if (!selectedCountry) return;
-
-      (async function () {
-        try {
-          setLoading(true);
-          setErr(null);
-          const data = await getCountrySearchResult();
-
-          const { flags, countries, populations, regions, capitals } = mapArray(
-            data,
-            true
-          );
-
-          setCountriesData({
-            flags,
-            countries,
-            populations,
-            regions,
-            capitals,
-          });
-        } catch (err) {
-          if (!(err.name === "AbortError")) {
-            setErr(err.message);
-            setSearchResult({
-              capitals: [],
-              flags: [],
-              countries: [],
-              populations: [],
-              regions: [],
-            });
-          }
-        } finally {
-          setLoading(false);
-        }
-      })();
+        setCountriesData({
+          flags,
+          countries,
+          populations,
+          regions,
+          capitals,
+        });
+      } else if (errSearch) {
+        setSearchResult({
+          capitals: [],
+          flags: [],
+          countries: [],
+          populations: [],
+          regions: [],
+        });
+      }
     },
-    [selectedCountry, setCountriesData, setErr, setLoading]
+    [dataSearch, errSearch, loadingSearch, setCountriesData, setErr, setLoading]
   );
 
   //Hide The search Result when the user clicks on page
@@ -176,77 +159,45 @@ export default function FindCountryBySearch({
   }, []);
 
   // Fetch the search result when the user types on the input
+  const { data, loading, err } = useFetch(
+    `${API_URL}/name/${query}?fields=flags,name,capital,population,continents`,
+    `${COUNTRY_DATA_ERR}`,
+    query,
+    true
+  );
+
+  //handle the values from useFetch hook during typing on search input
   useEffect(
     function () {
-      const controller = new AbortController();
+      setIsLoading(loading);
+      setError(err);
 
-      const signal = controller.signal;
+      if (data) {
+        const { flags, countries, populations, regions, capitals } = mapArray(
+          data,
+          true
+        );
 
-      const getCountrySearchResult = async function () {
-        try {
-          const result = await getJson(
-            `${API_URL}/name/${query}?fields=flags,name,capital,population,continents`,
-            `${COUNTRY_DATA_ERR}`,
-            { signal }
-          );
-
-          return result;
-        } catch (err) {
-          throw err;
-        }
-      };
-
-      setSearchResult({
-        capitals: [],
-        flags: [],
-        countries: [],
-        populations: [],
-        regions: [],
-      });
-
-      if (query.length === 0) return;
-
-      (async function () {
-        try {
-          setError(null);
-          setIsLoading(true);
-          searchResultEl.current.classList.remove("not-open");
-          searchResultEl.current.classList.add("show-result-list");
-          const data = await getCountrySearchResult();
-
-          const { flags, countries, populations, regions, capitals } = mapArray(
-            data,
-            true
-          );
-
-          setSearchResult({
-            capitals,
-            flags,
-            countries,
-            populations,
-            regions,
-          });
-        } catch (err) {
-          if (!(err.name === "AbortError")) {
-            setError(err.message);
-            setSearchResult({
-              capitals: [],
-              flags: [],
-              countries: [],
-              populations: [],
-              regions: [],
-            });
-          }
-        } finally {
-          setIsLoading(false);
-        }
-      })();
-
-      return function () {
-        controller.abort();
-      };
+        searchResultEl.current.classList.remove("not-open");
+        searchResultEl.current.classList.add("show-result-list");
+        setSearchResult({
+          capitals,
+          flags,
+          countries,
+          populations,
+          regions,
+        });
+      } else if (err || query.length === 0) {
+        setSearchResult({
+          capitals: [],
+          flags: [],
+          countries: [],
+          populations: [],
+          regions: [],
+        });
+      }
     },
-    [query]
+    [query, err, loading, data]
   );
 
   return (
