@@ -37,8 +37,8 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
-- Live Site URL: [Add live site URL here](https://your-live-site-url.com)
+- Solution URL: [solution URL](https://www.frontendmentor.io/solutions/rest-api-challenge-with-color-schemes-react-x6Aqe0DCgE)
+- Live Site URL: [live site URL](https://aemrobe.github.io/rest-api-countries-react/)
 
 ## My process
 
@@ -72,7 +72,7 @@ For the future, I want to build project by using react and do js challenges.
 
 - [Font awesome icons](https://www.https://fontawesome.com/) - This helped me to get my icons for the project
 
-- [The Ultimate React Course 2024: React, Next.js, Redux & More](https://www.udemy.com/course/the-ultimate-react-course/?utm_source=adwords&utm_medium=udemyads&utm_campaign=Search_DSA_Alpha_Prof_la.EN_cc.ROW-English&campaigntype=Search&portfolio=ROW-English&language=EN&product=Course&test=&audience=DSA&topic=React_JS&priority=Alpha&utm_content=deal4584&utm_term=_._ag_162511578404_._ad_696197165220_._kw__._de_c_._dm__._pl__._ti_dsa-2090444767094_._li_9075493_._pd__._&matchtype=&gad_source=1&gclid=Cj0KCQiA4fi7BhC5ARIsAEV1YibnzaVcPWf5eefcUIO1JJUfUKGh-F03UaGQjmVzJ64Wp7gtuGgr_94aAkPVEALw_wcB&couponCode=NEWYEARCAREER) - this helped me to learn react from the begginer to intermidiate react and I will continue to use for the advanced react
+- [The Ultimate React Course 2024: React, Next.js, Redux & More](https://www.udemy.com/course/the-ultimate-react-course/?utm_source=adwords&utm_medium=udemyads&utm_campaign=Search_DSA_Alpha_Prof_la.EN_cc.ROW-English&campaigntype=Search&portfolio=ROW-English&language=EN&product=Course&test=&audience=DSA&topic=React_JS&priority=Alpha&utm_content=deal4584&utm_term=_._ag_162511578404_._ad_696197165220_._kw__._de_c_._dm__._pl__._ti_dsa-2090444767094_._li_9075493_._pd__._&matchtype=&gad_source=1&gclid=Cj0KCQiA4fi7BhC5ARIsAEV1YibnzaVcPWf5eefcUIO1JJUfUKGh-F03UaGQjmVzJ64Wp7gtuGgr_94aAkPVEALw_wcB&couponCode=NEWYEARCAREER) - this helped me to learn react from the beginner to intermidiate react and I will continue to use it for the advanced react
 
 ## Author
 
