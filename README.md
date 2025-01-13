@@ -62,7 +62,7 @@ You may also see any lint errors in the console.
 
 ### What I learned
 
-In this challenge, I have learned how can I work with useEffect and useRef which are the features that are available in react that help us to work with sideeffects(fetching data from api and eventlisteners) and selecting the dom elements in react.
+In this challenge, I have learned how can I work with useEffect and useRef which are the features that are available in react that help us to work with sideeffects(fetching data from api and eventlisteners) and selecting the dom elements in react. I have also implemented a custom hook which is called useFetch which handles all the fetch logic which I have used throughout all the components. this custom hook avoids repeated code which I have used for the fetch api purpose.
 
 ### Continued development
 
