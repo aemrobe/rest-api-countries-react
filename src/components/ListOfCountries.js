@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import { mapArray } from "../Utils/helpers";
 import { API_URL } from "../config/config";
 
@@ -16,30 +16,30 @@ export default function ListOfCountries({
   triggerFetch,
   onHandleSelectedCountries,
 }) {
+  //arranging the data of the countries in a suitable format
+  const arrangeDataForListOfCountries = useCallback(function (data) {
+    const { flags, countries, populations, regions, capitals } = mapArray(data);
+
+    return { flags, countries, populations, regions, capitals };
+  }, []);
+
   const { data, loading, err } = useFetch(
     `${API_URL}/all?fields=flags,name,capital,population,continents
   `,
     "wrong countries url",
-    triggerFetch
+    triggerFetch,
+    false,
+    arrangeDataForListOfCountries
   );
 
+  //this effect should be here
   useEffect(
     function () {
       setIsLoading(loading);
       setError(err);
 
       if (data) {
-        const { flags, countries, populations, regions, capitals } = mapArray(
-          data,
-          ""
-        );
-        setCountriesData({
-          flags,
-          countries,
-          populations,
-          regions,
-          capitals,
-        });
+        setCountriesData(data);
       }
     },
     [data, loading, err, setError, setIsLoading, setCountriesData]
@@ -57,7 +57,7 @@ export default function ListOfCountries({
     >
       {!isLoading &&
         !error &&
-        countriesData.countries?.map((__, i) => (
+        countriesData?.countries?.map((__, i) => (
           <Country countriesData={countriesData} i={i} key={i} />
         ))}
       {isLoading && <Loader />}

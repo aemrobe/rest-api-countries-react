@@ -10,6 +10,7 @@ export default function HomePage({
   onHandleSelectedCountries,
 }) {
   /* home page */
+  // ### States ###
   const [countriesData, setCountriesData] = useState({
     flags: [],
     countries: [],

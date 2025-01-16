@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { mapArray } from "../Utils/helpers";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { arrangeData, mapArray } from "../Utils/helpers";
 import { API_URL, COUNTRY_DATA_ERR } from "../config/config";
 import Loader from "./Loader";
 import Error from "./Error";
@@ -16,16 +16,43 @@ export default function FindCountryBySearch({
   const searchInputBox = useRef(null);
 
   /* states */
-  const [isLoading, setIsLoading] = useState(null);
-  const [error, setError] = useState(null);
-  const [searchResult, setSearchResult] = useState({
-    flags: [],
-    countries: [],
-    populations: [],
-    regions: [],
-    capitals: [],
-  });
+  const [query, SetQuery] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
+
+  //a function which arranges the data in a suitable format
+  const arrangeDataForTypeOnSearchInput = useCallback(function (data) {
+    searchResultEl.current.classList.remove("not-open");
+    searchResultEl.current.classList.add("show-result-list");
+
+    const { flags, countries, populations, regions, capitals } = mapArray(
+      data,
+      true
+    );
+
+    return { flags, countries, populations, regions, capitals };
+  }, []);
+
+  // Fetch the search result when the user types on the input
+  const {
+    data: searchResult,
+    loading: isLoading,
+    err: error,
+  } = useFetch(
+    `${API_URL}/name/${query}?fields=flags,name,capital,population,continents`,
+    `${COUNTRY_DATA_ERR}`,
+    query,
+    true,
+    arrangeDataForTypeOnSearchInput
+  );
+
+  //showing the results from the user typing on the search box on the listofCountries component by using these setter function
+  useEffect(
+    function () {
+      setLoading(isLoading);
+      setErr(error);
+    },
+    [isLoading, error, setErr, setLoading]
+  );
 
   const closeSearchResults = () => {
     if (!searchResultEl.current.classList.contains("show-result-list")) return;
@@ -39,7 +66,7 @@ export default function FindCountryBySearch({
     }, 500);
   };
 
-  //handler
+  // ### handler ###
   const handleSelectedCountry = function (country) {
     setSelectedCountry(country);
     SetQuery("");
@@ -63,9 +90,8 @@ export default function FindCountryBySearch({
     }
   };
 
-  const [query, SetQuery] = useState("");
-
-  //handle when the user clicks on search result and when focus is outside of the search result
+  //### this is for keyboard users ###
+  //handle when the user is going through the search results and finish his watching and changed the focus outside of the search result.
   useEffect(function () {
     const focusinHandler = function (event) {
       if (!searchResultContainer.current.contains(event.target)) {
@@ -104,7 +130,9 @@ export default function FindCountryBySearch({
   } = useFetch(
     `${API_URL}/name/${selectedCountry}?fields=flags,name,capital,population,continents`,
     `${COUNTRY_DATA_ERR}`,
-    selectedCountry
+    selectedCountry,
+    false,
+    arrangeData
   );
 
   //handle the useFetch hook when someone clicks on the search result
@@ -114,26 +142,7 @@ export default function FindCountryBySearch({
       setErr(errSearch);
 
       if (dataSearch) {
-        const { flags, countries, populations, regions, capitals } = mapArray(
-          dataSearch,
-          true
-        );
-
-        setCountriesData({
-          flags,
-          countries,
-          populations,
-          regions,
-          capitals,
-        });
-      } else if (errSearch) {
-        setSearchResult({
-          capitals: [],
-          flags: [],
-          countries: [],
-          populations: [],
-          regions: [],
-        });
+        setCountriesData(dataSearch);
       }
     },
     [dataSearch, errSearch, loadingSearch, setCountriesData, setErr, setLoading]
@@ -157,48 +166,6 @@ export default function FindCountryBySearch({
       document.removeEventListener("click", handleClickOnPage);
     };
   }, []);
-
-  // Fetch the search result when the user types on the input
-  const { data, loading, err } = useFetch(
-    `${API_URL}/name/${query}?fields=flags,name,capital,population,continents`,
-    `${COUNTRY_DATA_ERR}`,
-    query,
-    true
-  );
-
-  //handle the values from useFetch hook during typing on search input
-  useEffect(
-    function () {
-      setIsLoading(loading);
-      setError(err);
-
-      if (data) {
-        const { flags, countries, populations, regions, capitals } = mapArray(
-          data,
-          true
-        );
-
-        searchResultEl.current.classList.remove("not-open");
-        searchResultEl.current.classList.add("show-result-list");
-        setSearchResult({
-          capitals,
-          flags,
-          countries,
-          populations,
-          regions,
-        });
-      } else if (err || query.length === 0) {
-        setSearchResult({
-          capitals: [],
-          flags: [],
-          countries: [],
-          populations: [],
-          regions: [],
-        });
-      }
-    },
-    [query, err, loading, data]
-  );
 
   return (
     <form className="find-country__search" onSubmit={handlerFormSubmit}>
@@ -236,7 +203,7 @@ export default function FindCountryBySearch({
         >
           {!error &&
             !isLoading &&
-            searchResult.countries?.map((_, i) => (
+            searchResult?.countries?.map((_, i) => (
               <SearchResult
                 onSelectedCountry={handleSelectedCountry}
                 key={i}

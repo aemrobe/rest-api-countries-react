@@ -2,7 +2,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import Loader from "./Loader";
 import Error from "./Error";
-import { useEffect } from "react";
 
 export default function DetailsPage({
   displayedCountryDetail,
@@ -12,20 +11,6 @@ export default function DetailsPage({
   isLoading,
   error,
 }) {
-  useEffect(
-    function () {
-      document.title = `${
-        displayedCountryDetail === "No Border Country"
-          ? "Rest Api Countries with color theme switcher"
-          : displayedCountryDetail.countryName
-      }`;
-
-      return function () {
-        document.title = `Rest Api Countries with color theme switcher`;
-      };
-    },
-    [displayedCountryDetail.countryName, displayedCountryDetail]
-  );
   /* detail page */
   return (
     <>

@@ -60,3 +60,13 @@ export const mapArray = function (arr, search) {
 
   return { flags, countries, populations, regions, capitals };
 };
+
+// a function which arranges the data in a suitable format
+export const arrangeData = function (data) {
+  const { flags, countries, populations, regions, capitals } = mapArray(
+    data,
+    true
+  );
+
+  return { flags, countries, populations, regions, capitals };
+};

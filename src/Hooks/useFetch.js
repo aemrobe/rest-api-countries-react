@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import { getJson } from "../Utils/helpers";
 
-const useFetch = (url, error, dependencyVariable, signal = false) => {
+const useFetch = (
+  url,
+  error,
+  dependencyVariable,
+  signal = false,
+  arrangeDataFunction = "",
+  arrageDataFunctionType = ""
+) => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(null);
   const [err, setErr] = useState(null);
@@ -39,10 +46,20 @@ const useFetch = (url, error, dependencyVariable, signal = false) => {
         setErr(null);
         const data = await fetchData();
 
-        setData(data);
+        if (
+          typeof arrangeDataFunction === "function" &&
+          arrageDataFunctionType === "async"
+        ) {
+          const dataObj = await arrangeDataFunction(data);
+
+          setData(dataObj);
+        } else {
+          setData(arrangeDataFunction(data));
+        }
       } catch (err) {
         if (!(err.name === "AbortError")) {
           setErr(err.message);
+          console.log(err.message);
           setData(null);
         }
       } finally {
@@ -55,9 +72,16 @@ const useFetch = (url, error, dependencyVariable, signal = false) => {
         controller.abort();
       };
     }
-  }, [url, error, dependencyVariable, signal]);
+  }, [
+    url,
+    error,
+    dependencyVariable,
+    signal,
+    arrangeDataFunction,
+    arrageDataFunctionType,
+  ]);
 
-  return { data, loading, err };
+  return { data, loading, err, setData, setErr };
 };
 
 export default useFetch;

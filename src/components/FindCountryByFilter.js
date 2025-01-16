@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from "react";
-import { mapArray } from "../Utils/helpers";
+import { arrangeData } from "../Utils/helpers";
 import { API_URL } from "../config/config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
@@ -12,10 +12,13 @@ export default function FindCountryByFilter({
   setLoading,
   setErr,
 }) {
+  // ### States ###
   const [filterByRegion, setFilterByRegion] = useState("");
 
+  // ### Elements ###
   const regionList = useRef(null);
 
+  // ### Handlers ###
   const handleFilterbyRegion = function (region) {
     setFilterByRegion(region);
   };
@@ -52,7 +55,9 @@ export default function FindCountryByFilter({
   const { data, loading, err } = useFetch(
     `${API_URL}/region/${filterByRegion}?fields=flags,name,capital,population,continents`,
     "wrong region data",
-    filterByRegion
+    filterByRegion,
+    false,
+    arrangeData
   );
 
   //handle the datas which are returned from the useFetch
@@ -62,18 +67,7 @@ export default function FindCountryByFilter({
       setErr(err);
 
       if (data) {
-        const { flags, countries, populations, regions, capitals } = mapArray(
-          data,
-          true
-        );
-
-        setCountriesData({
-          flags,
-          countries,
-          populations,
-          regions,
-          capitals,
-        });
+        setCountriesData(data);
       }
     },
     [data, err, loading, setCountriesData, setErr, setLoading]
