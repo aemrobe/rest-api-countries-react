@@ -142,7 +142,6 @@ export default function DetailsPage({
 
               <div
                 className="page-detail__info-text-part-3"
-                // onClick={onHandleBorderCountryDetails}
                 onKeyUp={function (e) {
                   if (e.key === "Enter") {
                     console.log("hey");

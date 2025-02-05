@@ -151,7 +151,7 @@ function App() {
 
   return (
     <div className={`${pageMode === "light" ? "" : "dark"} App`}>
-      <BrowserRouter>
+      <BrowserRouter basename="/rest-api-countries-react">
         <Header pageMode={pageMode} setPageMode={setPageMode}>
           <Logo
             onTriggerFetch={handleTriggerFetch}

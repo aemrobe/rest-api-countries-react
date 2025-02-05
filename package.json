@@ -1,5 +1,5 @@
 {
-  "homepage": ".",
+  "homepage": "https://aemrobe.github.io/rest-api-countries-react",
   "name": "rest-countries-api-react",
   "version": "0.1.0",
   "private": true,
@@ -22,7 +22,8 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "clean": "rimraf build"
   },
   "eslintConfig": {
     "extends": [
@@ -44,6 +45,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "gh-pages": "^6.3.0"
+    "gh-pages": "^6.3.0",
+    "rimraf": "^6.0.1"
   }
 }
