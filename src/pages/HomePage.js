@@ -22,7 +22,7 @@ export default function HomePage({
   const [isLoading, setIsLoading] = useState(null);
   const [error, setError] = useState(null);
   return (
-    <div className={`home-page ${selectedCountryDetail ? "hidden" : ""}`}>
+    <div className={`home-page`}>
       <FindCountry>
         <FindCountryBySearch
           setLoading={setIsLoading}

@@ -45,9 +45,7 @@ export default function DetailsPage({
       {isLoading && <Loader />}
       {error && <Error error={error} />}
       {!error && !isLoading && (
-        <div
-          className={`"page-detail ${selectedCountryDetail ? "" : "hidden"}`}
-        >
+        <div className={`page-detail`}>
           <button
             onClick={() => {
               onHandleBackToTheHomePage();
