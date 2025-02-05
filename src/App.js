@@ -1,16 +1,18 @@
 import { useState, useCallback } from "react";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 import Logo from "./components/Logo";
 import { DarkModeThemeSwitcher } from "./components/DarkModeThemeSwitcher";
 import WrapperContainer from "./components/WrapperContainer";
 import Main from "./components/Main";
-import HomePage from "./components/HomePage";
-import DetailsPage from "./components/DetailsPage";
+import HomePage from "./pages/HomePage";
+import DetailsPage from "./pages/DetailsPage";
 import Footer from "./components/Footer";
 
 import { API_URL, COUNTRY_DATA_ERR } from "./config/config";
 
 import useFetch from "./Hooks/useFetch";
+import Error from "./components/Error";
 
 function App() {
   const [pageMode, setPageMode] = useState("light");
@@ -141,65 +143,59 @@ function App() {
     setDisplayedCountryDetail("");
   };
 
-  const handleCountryDetail = function (e) {
-    const clickedCountryItem = e.target.closest(".country");
-
-    if (!clickedCountryItem) return;
-
-    const countryName = clickedCountryItem
-      .querySelector(".country__name")
-      .textContent.trim();
-
-    setSelectedCountryDetail(countryName);
-  };
-
   const handleEnterKeyPress = function (e) {
     if (e.code === "Enter") {
       handleTriggerFetch();
     }
   };
 
-  const handleBorderCountryDetail = function (e) {
-    const clickedBorderCountry = e.target.closest(
-      ".page-detail__text-item-border"
-    );
-
-    if (!clickedBorderCountry) return;
-
-    const borderCountryName = clickedBorderCountry.textContent.trim();
-
-    setSelectedCountryDetail(borderCountryName);
-  };
-
   return (
     <div className={`${pageMode === "light" ? "" : "dark"} App`}>
-      <Header pageMode={pageMode} setPageMode={setPageMode}>
-        <Logo
-          onTriggerFetch={handleTriggerFetch}
-          onHandleEnterKeyPress={handleEnterKeyPress}
-        />
-        <DarkModeThemeSwitcher pageMode={pageMode} setPageMode={setPageMode} />
-      </Header>
-
-      <WrapperContainer>
-        <Main>
-          <HomePage
-            selectedCountryDetail={selectedCountryDetail}
-            onHandleSelectedCountries={handleCountryDetail}
-            triggerFetch={triggerFetch}
+      <BrowserRouter>
+        <Header pageMode={pageMode} setPageMode={setPageMode}>
+          <Logo
+            onTriggerFetch={handleTriggerFetch}
+            onHandleEnterKeyPress={handleEnterKeyPress}
           />
-
-          <DetailsPage
-            isLoading={isLoading}
-            error={error}
-            selectedCountryDetail={selectedCountryDetail}
-            onHandleBackToTheHomePage={backToTheHomePage}
-            onHandleBorderCountryDetails={handleBorderCountryDetail}
-            displayedCountryDetail={displayedCountryDetail}
+          <DarkModeThemeSwitcher
+            pageMode={pageMode}
+            setPageMode={setPageMode}
           />
-        </Main>
-        <Footer />
-      </WrapperContainer>
+        </Header>
+
+        <WrapperContainer>
+          <Main>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <HomePage
+                    selectedCountryDetail={selectedCountryDetail}
+                    triggerFetch={triggerFetch}
+                  />
+                }
+              />
+
+              <Route
+                path="details/:countryName"
+                element={
+                  <DetailsPage
+                    setSelectedCountryDetail={setSelectedCountryDetail}
+                    isLoading={isLoading}
+                    error={error}
+                    selectedCountryDetail={selectedCountryDetail}
+                    onHandleBackToTheHomePage={backToTheHomePage}
+                    displayedCountryDetail={displayedCountryDetail}
+                  />
+                }
+              />
+
+              <Route path="*" element={<Error error={"Page not found 😢"} />} />
+            </Routes>
+          </Main>
+          <Footer />
+        </WrapperContainer>
+      </BrowserRouter>
     </div>
   );
 }

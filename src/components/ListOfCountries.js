@@ -5,6 +5,7 @@ import { API_URL } from "../config/config";
 import Loader from "./Loader";
 import Error from "./Error";
 import useFetch from "../Hooks/useFetch";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function ListOfCountries({
   error,
@@ -14,8 +15,21 @@ export default function ListOfCountries({
   countriesData,
   setCountriesData,
   triggerFetch,
-  onHandleSelectedCountries,
 }) {
+  const navigate = useNavigate();
+
+  const handleCountryDetail = function (e) {
+    const clickedCountryItem = e.target.closest(".country");
+
+    if (!clickedCountryItem) return;
+
+    const countryName = clickedCountryItem
+      .querySelector(".country__name")
+      .textContent.trim();
+
+    navigate(`/details/${countryName}`);
+  };
+
   //arranging the data of the countries in a suitable format
   const arrangeDataForListOfCountries = useCallback(function (data) {
     const { flags, countries, populations, regions, capitals } = mapArray(data);
@@ -48,10 +62,9 @@ export default function ListOfCountries({
   return (
     <ul
       className="list-of-countries"
-      onClick={onHandleSelectedCountries}
       onKeyUp={function (e) {
         if (e.key === "Enter") {
-          onHandleSelectedCountries(e);
+          handleCountryDetail(e);
         }
       }}
     >
@@ -68,43 +81,49 @@ export default function ListOfCountries({
 
 function Country({ countriesData, i }) {
   return (
-    <li className="country" tabIndex="0">
-      <div className="image-container">
-        <img
-          src={`${countriesData.flags[i].png}`}
-          alt={`${
-            countriesData.flags[i].alt === ""
-              ? "image of the flag"
-              : countriesData.flags[i].alt
-          } }
+    <li className="country">
+      <Link to={`details/${countriesData.countries[i]}`}>
+        <div className="image-container">
+          <img
+            src={`${countriesData.flags[i].png}`}
+            alt={`${
+              countriesData.flags[i].alt === ""
+                ? "image of the flag"
+                : countriesData.flags[i].alt
+            } }
        
     }"`}
-          className="country__flag"
-        />
-      </div>
+            className="country__flag"
+          />
+        </div>
 
-      <div className="country__container">
-        <h2 className="country__name">{countriesData.countries[i]}</h2>
+        <div className="country__container">
+          <h2 className="country__name">{countriesData.countries[i]}</h2>
 
-        <div className="country__static-container">
-          <div className="country__statics">
-            <p className="country__statics-title">Population:</p>
-            <p className="country__statics-item">
-              {countriesData.populations[i]}
-            </p>
-          </div>
+          <div className="country__static-container">
+            <div className="country__statics">
+              <p className="country__statics-title">Population:</p>
+              <p className="country__statics-item">
+                {countriesData.populations[i]}
+              </p>
+            </div>
 
-          <div className="country__statics">
-            <p className="country__statics-title">Region:</p>
-            <p className="country__statics-item">{countriesData.regions[i]}</p>
-          </div>
+            <div className="country__statics">
+              <p className="country__statics-title">Region:</p>
+              <p className="country__statics-item">
+                {countriesData.regions[i]}
+              </p>
+            </div>
 
-          <div className="country__statics">
-            <p className="country__statics-title">Capital:</p>
-            <p className="country__statics-item">{countriesData.capitals[i]}</p>
+            <div className="country__statics">
+              <p className="country__statics-title">Capital:</p>
+              <p className="country__statics-item">
+                {countriesData.capitals[i]}
+              </p>
+            </div>
           </div>
         </div>
-      </div>
+      </Link>
     </li>
   );
 }

@@ -1,8 +1,8 @@
 import { useState } from "react";
-import FindCountry from "./FindCountry";
-import FindCountryBySearch from "./FindCountryBySearch";
-import FindCountryByFilter from "./FindCountryByFilter";
-import ListOfCountries from "./ListOfCountries";
+import FindCountry from "../components/FindCountry";
+import FindCountryBySearch from "../components/FindCountryBySearch";
+import FindCountryByFilter from "../components/FindCountryByFilter";
+import ListOfCountries from "../components/ListOfCountries";
 
 export default function HomePage({
   triggerFetch,

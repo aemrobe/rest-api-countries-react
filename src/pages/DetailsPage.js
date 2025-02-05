@@ -1,16 +1,44 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
-import Loader from "./Loader";
-import Error from "./Error";
+import Loader from "../components/Loader";
+import Error from "../components/Error";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useEffect } from "react";
 
 export default function DetailsPage({
   displayedCountryDetail,
   onHandleBackToTheHomePage,
-  onHandleBorderCountryDetails,
   selectedCountryDetail,
+  setSelectedCountryDetail,
   isLoading,
   error,
 }) {
+  const navigate = useNavigate();
+  const { countryName } = useParams();
+
+  const handleBorderCountryDetail = function (e) {
+    const clickedBorderCountry = e.target.closest(
+      ".page-detail__text-item-border"
+    );
+
+    if (!clickedBorderCountry) return;
+
+    const borderCountryName = clickedBorderCountry.textContent.trim();
+
+    navigate(`/details/${borderCountryName}`);
+  };
+
+  useEffect(
+    function () {
+      if (countryName) {
+        setSelectedCountryDetail(countryName);
+      } else {
+        setSelectedCountryDetail(null);
+      }
+    },
+    [countryName, setSelectedCountryDetail]
+  );
+
   /* detail page */
   return (
     <>
@@ -21,7 +49,10 @@ export default function DetailsPage({
           className={`"page-detail ${selectedCountryDetail ? "" : "hidden"}`}
         >
           <button
-            onClick={onHandleBackToTheHomePage}
+            onClick={() => {
+              onHandleBackToTheHomePage();
+              navigate(-1);
+            }}
             className="back-btn"
             aria-label="Back To Previous page"
           >
@@ -111,10 +142,11 @@ export default function DetailsPage({
 
               <div
                 className="page-detail__info-text-part-3"
-                onClick={onHandleBorderCountryDetails}
+                // onClick={onHandleBorderCountryDetails}
                 onKeyUp={function (e) {
                   if (e.key === "Enter") {
-                    onHandleBorderCountryDetails(e);
+                    console.log("hey");
+                    handleBorderCountryDetail(e);
                   }
                 }}
               >
@@ -143,8 +175,8 @@ export default function DetailsPage({
 
 function DisplayBorderCountries({ borderCountry }) {
   return (
-    <li className="page-detail__text-item-border" tabIndex="0">
-      {borderCountry}
+    <li className={`page-detail__text-item-border`}>
+      <Link to={`/details/${borderCountry}`}>{borderCountry}</Link>
     </li>
   );
 }

@@ -16,10 +16,10 @@ export default function FindCountryBySearch({
   const searchInputBox = useRef(null);
 
   /* states */
-  const [query, SetQuery] = useState("");
+  const [query, setQuery] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
 
-  //a function which arranges the data in a suitable format
+  //a function which arranges the searched country data in a suitable format
   const arrangeDataForTypeOnSearchInput = useCallback(function (data) {
     searchResultEl.current.classList.remove("not-open");
     searchResultEl.current.classList.add("show-result-list");
@@ -69,7 +69,7 @@ export default function FindCountryBySearch({
   // ### handler ###
   const handleSelectedCountry = function (country) {
     setSelectedCountry(country);
-    SetQuery("");
+    setQuery("");
     closeSearchResults();
   };
 
@@ -78,7 +78,7 @@ export default function FindCountryBySearch({
     e.preventDefault();
 
     setCountriesData(searchResult);
-    SetQuery("");
+    setQuery("");
   };
 
   //handle when the input box is empty
@@ -104,7 +104,7 @@ export default function FindCountryBySearch({
 
       if (e.code === "Enter" && elementOnFocus) {
         setSelectedCountry(elementOnFocus.textContent.trim());
-        SetQuery("");
+        setQuery("");
         closeSearchResults();
       } else if (e.code === "Tab") {
         const lastSearchResult = searchResultContainer.current.lastElementChild;
@@ -181,7 +181,7 @@ export default function FindCountryBySearch({
         ref={searchInputBox}
         type="text"
         value={query}
-        onChange={(e) => SetQuery(e.target.value)}
+        onChange={(e) => setQuery(e.target.value)}
         onKeyUp={handleEmptyInputBox}
         id="search-element"
         name="country name"
