@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useCallback } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Header from "./components/Header";
 import Logo from "./components/Logo";
@@ -13,11 +13,10 @@ import { API_URL, COUNTRY_DATA_ERR } from "./config/config";
 
 import useFetch from "./Hooks/useFetch";
 import Error from "./components/Error";
+import { useApp } from "./Context/AppContext";
 
 function App() {
-  const [pageMode, setPageMode] = useState("light");
-  const [triggerFetch, setTriggerFetch] = useState(true);
-  const [selectedCountryDetail, setSelectedCountryDetail] = useState("");
+  const { pageMode, selectedCountryDetail } = useApp();
 
   //a function which the arrange the data it receives to make it suitable for the details page
   const arrangeDataForDetaillsPage = useCallback(async function (data) {
@@ -120,7 +119,6 @@ function App() {
     data: displayedCountryDetail,
     loading: isLoading,
     err: error,
-    setData: setDisplayedCountryDetail,
     setErr: setError,
   } = useFetch(
     `${API_URL}/name/${selectedCountryDetail}?fullText=true`,
@@ -131,60 +129,25 @@ function App() {
     "async"
   );
 
-  const handleTriggerFetch = function () {
-    setTriggerFetch((prevValue) => !prevValue);
-    setSelectedCountryDetail("");
-    setDisplayedCountryDetail("");
-    setError("");
-  };
-
-  const backToTheHomePage = function () {
-    setSelectedCountryDetail("");
-    setDisplayedCountryDetail("");
-  };
-
-  const handleEnterKeyPress = function (e) {
-    if (e.code === "Enter") {
-      handleTriggerFetch();
-    }
-  };
-
   return (
     <div className={`${pageMode === "light" ? "" : "dark"} App`}>
       <BrowserRouter basename="/rest-api-countries-react">
-        <Header pageMode={pageMode} setPageMode={setPageMode}>
-          <Logo
-            onTriggerFetch={handleTriggerFetch}
-            onHandleEnterKeyPress={handleEnterKeyPress}
-          />
-          <DarkModeThemeSwitcher
-            pageMode={pageMode}
-            setPageMode={setPageMode}
-          />
+        <Header>
+          <Logo setError={setError} />
+          <DarkModeThemeSwitcher />
         </Header>
 
         <WrapperContainer>
           <Main>
             <Routes>
-              <Route
-                path="/"
-                element={
-                  <HomePage
-                    selectedCountryDetail={selectedCountryDetail}
-                    triggerFetch={triggerFetch}
-                  />
-                }
-              />
+              <Route path="/" element={<HomePage />} />
 
               <Route
                 path="details/:countryName"
                 element={
                   <DetailsPage
-                    setSelectedCountryDetail={setSelectedCountryDetail}
                     isLoading={isLoading}
                     error={error}
-                    selectedCountryDetail={selectedCountryDetail}
-                    onHandleBackToTheHomePage={backToTheHomePage}
                     displayedCountryDetail={displayedCountryDetail}
                   />
                 }

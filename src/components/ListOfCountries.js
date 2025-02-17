@@ -6,16 +6,21 @@ import Loader from "./Loader";
 import Error from "./Error";
 import useFetch from "../Hooks/useFetch";
 import { Link, useNavigate } from "react-router-dom";
+import { useHomePage } from "../Context/HomePageContext";
+import { useApp } from "../Context/AppContext";
 
-export default function ListOfCountries({
-  error,
-  isLoading,
-  setIsLoading,
-  setError,
-  countriesData,
-  setCountriesData,
-  triggerFetch,
-}) {
+export default function ListOfCountries() {
+  const {
+    isLoading,
+    setIsLoading,
+    error,
+    setError,
+    countriesData,
+    setCountriesData,
+  } = useHomePage();
+
+  const { triggerFetch } = useApp();
+
   const navigate = useNavigate();
 
   const handleCountryDetail = function (e) {

@@ -1,15 +1,31 @@
 import { useNavigate } from "react-router-dom";
+import { useApp } from "../Context/AppContext";
 
-export default function Logo({ onTriggerFetch, onHandleEnterKeyPress }) {
+export default function Logo({ setError }) {
   const navigate = useNavigate();
+
+  const { setTriggerFetch, setSelectedCountryDetail } = useApp();
+
+  //### Handlers ###
+  const handleTriggerFetch = function () {
+    setTriggerFetch((prevValue) => !prevValue);
+    setSelectedCountryDetail("");
+    setError("");
+  };
+
+  const handleEnterKeyPress = function (e) {
+    if (e.code === "Enter") {
+      handleTriggerFetch();
+    }
+  };
 
   return (
     <h1
       onClick={() => {
-        onTriggerFetch();
+        handleTriggerFetch();
         navigate("/");
       }}
-      onKeyUp={onHandleEnterKeyPress}
+      onKeyUp={handleEnterKeyPress}
       className="title"
       tabIndex="0"
     >

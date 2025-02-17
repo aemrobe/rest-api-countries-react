@@ -1,7 +1,10 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faMoon } from "@fortawesome/free-regular-svg-icons";
+import { useApp } from "../Context/AppContext";
 
-export function DarkModeThemeSwitcher({ pageMode, setPageMode }) {
+export function DarkModeThemeSwitcher() {
+  const { pageMode, setPageMode } = useApp();
+
   // ### Handler ###
   const handlePageMode = function () {
     setPageMode((previousMode) =>

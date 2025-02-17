@@ -59,7 +59,6 @@ const useFetch = (
       } catch (err) {
         if (!(err.name === "AbortError")) {
           setErr(err.message);
-          console.log(err.message);
           setData(null);
         }
       } finally {

@@ -4,12 +4,10 @@ import Loader from "../components/Loader";
 import Error from "../components/Error";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { useEffect } from "react";
+import { useApp } from "../Context/AppContext";
 
 export default function DetailsPage({
   displayedCountryDetail,
-  onHandleBackToTheHomePage,
-  selectedCountryDetail,
-  setSelectedCountryDetail,
   isLoading,
   error,
 }) {
@@ -26,6 +24,12 @@ export default function DetailsPage({
     const borderCountryName = clickedBorderCountry.textContent.trim();
 
     navigate(`/details/${borderCountryName}`);
+  };
+
+  const { setSelectedCountryDetail } = useApp();
+
+  const handleBackToTheHomePage = function () {
+    setSelectedCountryDetail("");
   };
 
   useEffect(
@@ -48,7 +52,7 @@ export default function DetailsPage({
         <div className={`page-detail`}>
           <button
             onClick={() => {
-              onHandleBackToTheHomePage();
+              handleBackToTheHomePage();
               navigate(-1);
             }}
             className="back-btn"
@@ -142,7 +146,6 @@ export default function DetailsPage({
                 className="page-detail__info-text-part-3"
                 onKeyUp={function (e) {
                   if (e.key === "Enter") {
-                    console.log("hey");
                     handleBorderCountryDetail(e);
                   }
                 }}

@@ -4,12 +4,9 @@ import { API_URL, COUNTRY_DATA_ERR } from "../config/config";
 import Loader from "./Loader";
 import Error from "./Error";
 import useFetch from "../Hooks/useFetch";
+import { useHomePage } from "../Context/HomePageContext";
 
-export default function FindCountryBySearch({
-  setCountriesData,
-  setLoading,
-  setErr,
-}) {
+export default function FindCountryBySearch() {
   /* search element */
   const searchResultEl = useRef(null);
   const searchResultContainer = useRef(null);
@@ -18,6 +15,8 @@ export default function FindCountryBySearch({
   /* states */
   const [query, setQuery] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
+
+  const { setCountriesData, setIsLoading, setError } = useHomePage();
 
   //a function which arranges the searched country data in a suitable format
   const arrangeDataForTypeOnSearchInput = useCallback(function (data) {
@@ -45,13 +44,13 @@ export default function FindCountryBySearch({
     arrangeDataForTypeOnSearchInput
   );
 
-  //showing the results from the user typing on the search box on the listofCountries component by using these setter function
+  //handles the data returned from the useFetch hook that are changed when someone types on an search input box
   useEffect(
     function () {
-      setLoading(isLoading);
-      setErr(error);
+      setIsLoading(isLoading);
+      setError(error);
     },
-    [isLoading, error, setErr, setLoading]
+    [isLoading, error, setError, setIsLoading]
   );
 
   const closeSearchResults = () => {
@@ -66,7 +65,7 @@ export default function FindCountryBySearch({
     }, 500);
   };
 
-  // ### handler ###
+  // ### handlers ###
   const handleSelectedCountry = function (country) {
     setSelectedCountry(country);
     setQuery("");
@@ -91,7 +90,7 @@ export default function FindCountryBySearch({
   };
 
   //### this is for keyboard users ###
-  //handle when the user is going through the search results and finish his watching and changed the focus outside of the search result.
+  //handle when the user is going through the search results and finish his navigation through the search results and changes the focus outside of the search result.
   useEffect(function () {
     const focusinHandler = function (event) {
       if (!searchResultContainer.current.contains(event.target)) {
@@ -135,20 +134,27 @@ export default function FindCountryBySearch({
     arrangeData
   );
 
-  //handle the useFetch hook when someone clicks on the search result
+  //handle the datas returned from useFetch hook when someone clicks on the search result
   useEffect(
     function () {
-      setLoading(loadingSearch);
-      setErr(errSearch);
+      setIsLoading(loadingSearch);
+      setError(errSearch);
 
       if (dataSearch) {
         setCountriesData(dataSearch);
       }
     },
-    [dataSearch, errSearch, loadingSearch, setCountriesData, setErr, setLoading]
+    [
+      dataSearch,
+      errSearch,
+      loadingSearch,
+      setCountriesData,
+      setError,
+      setIsLoading,
+    ]
   );
 
-  //Hide The search Result when the user clicks on page
+  //Hide The search Result when the user clicks on page outside of the search results
   useEffect(function () {
     //handler Function
     const handleClickOnPage = function (e) {

@@ -4,14 +4,12 @@ import { API_URL } from "../config/config";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faChevronDown } from "@fortawesome/free-solid-svg-icons";
 import useFetch from "../Hooks/useFetch";
+import { useHomePage } from "../Context/HomePageContext";
 
-export default function FindCountryByFilter({
-  isLoading,
-  error,
-  setCountriesData,
-  setLoading,
-  setErr,
-}) {
+export default function FindCountryByFilter() {
+  const { isLoading, setIsLoading, error, setError, setCountriesData } =
+    useHomePage();
+
   // ### States ###
   const [filterByRegion, setFilterByRegion] = useState("");
 
@@ -37,11 +35,7 @@ export default function FindCountryByFilter({
     if (label) {
       if (e.key !== "Enter") return;
 
-      const filterRegionList = document.querySelector(
-        ".find-country__filter-region-list"
-      );
-
-      filterRegionList.focus();
+      regionList.current.focus();
     } else if (filterRegion) {
       if (e.key !== "Enter") return;
 
@@ -60,17 +54,17 @@ export default function FindCountryByFilter({
     arrangeData
   );
 
-  //handle the datas which are returned from the useFetch
+  //handle the datas which are returned from the useFetch when a user is clicking on the regions
   useEffect(
     function () {
-      setLoading(loading);
-      setErr(err);
+      setIsLoading(loading);
+      setError(err);
 
       if (data) {
         setCountriesData(data);
       }
     },
-    [data, err, loading, setCountriesData, setErr, setLoading]
+    [data, err, loading, setCountriesData, setError, setIsLoading]
   );
 
   /* filter by region */
