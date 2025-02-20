@@ -1,12 +1,15 @@
 import { useState, useEffect, useRef, useCallback } from "react";
-import { arrangeData, mapArray } from "../Utils/helpers";
+import { mapArray } from "../Utils/helpers";
 import { API_URL, COUNTRY_DATA_ERR } from "../config/config";
 import Loader from "./Loader";
 import Error from "./Error";
 import useFetch from "../Hooks/useFetch";
 import { useHomePage } from "../Context/HomePageContext";
+import { useNavigate } from "react-router-dom";
 
 export default function FindCountryBySearch() {
+  const navigate = useNavigate();
+
   /* search element */
   const searchResultEl = useRef(null);
   const searchResultContainer = useRef(null);
@@ -14,8 +17,6 @@ export default function FindCountryBySearch() {
 
   /* states */
   const [query, setQuery] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState("");
-
   const { setCountriesData, setIsLoading, setError } = useHomePage();
 
   //a function which arranges the searched country data in a suitable format
@@ -67,9 +68,8 @@ export default function FindCountryBySearch() {
 
   // ### handlers ###
   const handleSelectedCountry = function (country) {
-    setSelectedCountry(country);
     setQuery("");
-    closeSearchResults();
+    navigate(`/details/${country}`);
   };
 
   //handle when user submits a search query
@@ -91,67 +91,39 @@ export default function FindCountryBySearch() {
 
   //### this is for keyboard users ###
   //handle when the user is going through the search results and finish his navigation through the search results and changes the focus outside of the search result.
-  useEffect(function () {
-    const focusinHandler = function (event) {
-      if (!searchResultContainer.current.contains(event.target)) {
-        closeSearchResults();
-      }
-    };
-
-    const searchCountriesByKeyboard = function (e) {
-      const elementOnFocus = e.target.closest(".find-country__search-result");
-
-      if (e.code === "Enter" && elementOnFocus) {
-        setSelectedCountry(elementOnFocus.textContent.trim());
-        setQuery("");
-        closeSearchResults();
-      } else if (e.code === "Tab") {
-        const lastSearchResult = searchResultContainer.current.lastElementChild;
-
-        if (document.activeElement === lastSearchResult) {
-          document.addEventListener("focusin", focusinHandler, { once: true });
-        }
-      }
-    };
-
-    document.addEventListener("keyup", searchCountriesByKeyboard);
-
-    return () => {
-      document.removeEventListener("keyup", searchCountriesByKeyboard);
-    };
-  }, []);
-
-  //handle the search result when the user clicks on the search result
-  const {
-    data: dataSearch,
-    loading: loadingSearch,
-    err: errSearch,
-  } = useFetch(
-    `${API_URL}/name/${selectedCountry}?fields=flags,name,capital,population,continents`,
-    `${COUNTRY_DATA_ERR}`,
-    selectedCountry,
-    false,
-    arrangeData
-  );
-
-  //handle the datas returned from useFetch hook when someone clicks on the search result
   useEffect(
     function () {
-      setIsLoading(loadingSearch);
-      setError(errSearch);
+      const focusinHandler = function (event) {
+        if (!searchResultContainer.current.contains(event.target)) {
+          closeSearchResults();
+        }
+      };
 
-      if (dataSearch) {
-        setCountriesData(dataSearch);
-      }
+      const searchCountriesByKeyboard = function (e) {
+        const elementOnFocus = e.target.closest(".find-country__search-result");
+
+        if (e.code === "Enter" && elementOnFocus) {
+          setQuery("");
+          navigate(`/details/${elementOnFocus.textContent.trim()}`);
+        } else if (e.code === "Tab") {
+          const lastSearchResult =
+            searchResultContainer.current.lastElementChild;
+
+          if (document.activeElement === lastSearchResult) {
+            document.addEventListener("focusin", focusinHandler, {
+              once: true,
+            });
+          }
+        }
+      };
+
+      document.addEventListener("keyup", searchCountriesByKeyboard);
+
+      return () => {
+        document.removeEventListener("keyup", searchCountriesByKeyboard);
+      };
     },
-    [
-      dataSearch,
-      errSearch,
-      loadingSearch,
-      setCountriesData,
-      setError,
-      setIsLoading,
-    ]
+    [navigate]
   );
 
   //Hide The search Result when the user clicks on page outside of the search results
