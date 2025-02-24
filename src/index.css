@@ -246,6 +246,12 @@ main {
   border-bottom: 1px solid var(--Dark-Gray);
 }
 
+.find-country__search-result a {
+  text-decoration: none;
+  color: inherit;
+  outline: none;
+}
+
 /*filter by region*/
 .find-country__filter-countries {
   box-shadow: 0 1px 8px 0 rgba(0, 0, 0, 0.1);
@@ -290,7 +296,7 @@ input:focus,
   outline: 2px solid var(--Dark-Gray);
 }
 
-.find-country__search-result:focus {
+.find-country__search-result:focus-within {
   outline: none;
   border-bottom: 2px solid var(--Dark-Gray);
 }

@@ -5,7 +5,7 @@ import Loader from "./Loader";
 import Error from "./Error";
 import useFetch from "../Hooks/useFetch";
 import { useHomePage } from "../Context/HomePageContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function FindCountryBySearch() {
   const navigate = useNavigate();
@@ -67,11 +67,6 @@ export default function FindCountryBySearch() {
   };
 
   // ### handlers ###
-  const handleSelectedCountry = function (country) {
-    setQuery("");
-    navigate(`/details/${country}`);
-  };
-
   //handle when user submits a search query
   const handlerFormSubmit = function (e) {
     e.preventDefault();
@@ -109,7 +104,9 @@ export default function FindCountryBySearch() {
           const lastSearchResult =
             searchResultContainer.current.lastElementChild;
 
-          if (document.activeElement === lastSearchResult) {
+          const linkElement = lastSearchResult?.querySelector("a");
+
+          if (document.activeElement === linkElement) {
             document.addEventListener("focusin", focusinHandler, {
               once: true,
             });
@@ -182,12 +179,7 @@ export default function FindCountryBySearch() {
           {!error &&
             !isLoading &&
             searchResult?.countries?.map((_, i) => (
-              <SearchResult
-                onSelectedCountry={handleSelectedCountry}
-                key={i}
-                result={searchResult}
-                i={i}
-              />
+              <SearchResult key={i} result={searchResult} i={i} />
             ))}
           {isLoading && <Loader />}
           {error && <Error error={error} />}
@@ -197,14 +189,10 @@ export default function FindCountryBySearch() {
   );
 }
 
-function SearchResult({ result, i, onSelectedCountry }) {
+function SearchResult({ result, i }) {
   return (
-    <li
-      tabIndex="0"
-      onClick={() => onSelectedCountry(result.countries[i])}
-      className={`find-country__search-result result-${i + 1}`}
-    >
-      {result.countries[i]}
+    <li className={`find-country__search-result`}>
+      <Link to={`/details/${result.countries[i]}`}>{result.countries[i]}</Link>
     </li>
   );
 }
